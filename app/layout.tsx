@@ -15,7 +15,12 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: "SnapBooth Photobooth",
-  description: "Aplikasi photobooth web dengan kamera, template, download, print, dan email."
+  description: "Aplikasi photobooth web dengan kamera, template, download, print, dan email.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico"
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
