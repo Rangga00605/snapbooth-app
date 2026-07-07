@@ -56,10 +56,10 @@ const strip4NarrowSlots = [
 ];
 
 const strip4Classic = [
-  { x: 152, y: 10, w: 388, h: 390 },
-  { x: 152, y: 415, w: 388, h: 390 },
-  { x: 152, y: 817, w: 388, h: 390 },
-  { x: 152, y: 1221, w:388, h: 390 }
+  { x: 189, y: 10, w: 298, h: 390 },
+  { x: 189, y: 415, w: 298, h: 390 },
+  { x: 189, y: 817, w: 298, h: 390 },
+  { x: 189, y: 1221, w:298, h: 390 }
 ];
 
 const strip4Slots = [
@@ -700,6 +700,34 @@ async function handleUploadPhotos(event: React.ChangeEvent<HTMLInputElement>) {
   canvas.width = selectedTemplate.canvasWidth;
   canvas.height = selectedTemplate.canvasHeight;
 
+  function drawImageCover(
+  ctx: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+  ) {
+  const imageRatio = image.width / image.height;
+  const slotRatio = w / h;
+
+  let sx = 0;
+  let sy = 0;
+  let sw = image.width;
+  let sh = image.height;
+
+  if (imageRatio > slotRatio) {
+    // Foto terlalu lebar, crop kiri-kanan
+    sw = image.height * slotRatio;
+    sx = (image.width - sw) / 2;
+  } else {
+    // Foto terlalu tinggi, crop atas-bawah
+    sh = image.width / slotRatio;
+    sy = (image.height - sh) / 2;
+  }
+
+  ctx.drawImage(image, sx, sy, sw, sh, x, y, w, h);
+  }
   const ctx = canvas.getContext("2d");
   if (!ctx) return "";
 
@@ -723,8 +751,9 @@ async function handleUploadPhotos(event: React.ChangeEvent<HTMLInputElement>) {
 
     const image = await loadImage(photo);
     ctx.save();
+    
     ctx.filter = getCanvasFilter();
-    ctx.drawImage(image, slot.x, slot.y, slot.w, slot.h);
+    drawImageCover(ctx, image, slot.x, slot.y, slot.w, slot.h);
     ctx.restore();
   }
 
